@@ -1,8 +1,8 @@
 {
   "name": "@marcduez/openapi-to-joi",
   "version": "1.2.0",
-  "main": "cli.js",
-  "types": "cli.d.ts",
+  "main": "built/cli.js",
+  "types": "built/cli.d.ts",
   "repository": "git@github.com:marcduez/openapi-to-joi.git",
   "author": "Marc Duez <marcduez@gmail.com>",
   "license": "MIT",
@@ -46,6 +46,6 @@
     "test": "jest"
   },
   "bin": {
-    "openapi-to-joi": "cli.js"
+    "openapi-to-joi": "built/cli.js"
   }
 }
