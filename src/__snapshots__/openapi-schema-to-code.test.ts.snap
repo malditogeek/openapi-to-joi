@@ -1,9 +1,51 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`openapiSchemaToCode creates expected file 1`] = `
-"/* eslint-disable */
-/* prettier-ignore */
-import Joi from \\"joi\\"
+"import Joi from \\"joi\\";
+
+export const schemas = {
+  parameters: {
+    get: {
+      path: Joi.object({ item_id: Joi.string().required().min(1) }),
+      query: Joi.object({ extra: Joi.boolean().optional() }),
+      header: Joi.object({}),
+      cookie: Joi.object({}),
+    },
+  },
+  components: {
+    Component1: Joi.object({
+      field1: Joi.string().required().email({}),
+      field2: Joi.number().required().integer(),
+      field3: Joi.number().max(10).min(0).multiple(0.1),
+      field4: Joi.date(),
+      field5: Joi.string().allow(\\"option1\\", \\"option2\\").only(),
+    }).unknown(),
+    Component2: Joi.string().allow(\\"option1\\", \\"option2\\").only(),
+    Component3: Joi.alternatives()
+      .match(\\"all\\")
+      .try(Joi.string().allow(\\"\\").min(0), Joi.number()),
+    Component4: Joi.alternatives()
+      .match(\\"any\\")
+      .try(Joi.string().allow(\\"\\").min(0), Joi.number()),
+    Component5: Joi.alternatives()
+      .match(\\"one\\")
+      .try(
+        Joi.object({
+          pet_type: Joi.string().allow(\\"\\").required().min(0),
+          hunt: Joi.boolean(),
+        }).unknown(),
+        Joi.object({
+          pet_type: Joi.string().allow(\\"\\").required().min(0),
+          bark: Joi.boolean(),
+        }).unknown()
+      ),
+  },
+};
+"
+`;
+
+exports[`openapiSchemaToCode creates export file without description elements 1`] = `
+"import Joi from \\"joi\\";
 
 export const schemas = {
   parameters: {

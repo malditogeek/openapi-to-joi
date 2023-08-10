@@ -1,5 +1,5 @@
 import Joi from "joi"
-import joiSchemaToCode from "./joi-schema-to-code"
+import { joiSchemaToCode } from "./joi-schema-to-code"
 
 describe("joiSchemaToCode()", () => {
   describe("any schema", () => {

@@ -1,0 +1,120 @@
+{
+  "$schema": "https://spec.openapis.org/oas/3.0/schema/2021-09-28",
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Example 1"
+  },
+  "servers": [
+    {
+      "url": "http://domain.com"
+    }
+  ],
+  "paths": {
+    "/{item_id}": {
+      "get": {
+        "operationId": "get",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ExtraParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Component1"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "ExtraParameter": {
+        "name": "extra",
+        "in": "query",
+        "schema": {
+          "type": "boolean"
+        }
+      }
+    },
+    "schemas": {
+      "Component1": {
+        "type": "object",
+        "required": ["field1", "field2"],
+        "properties": {
+          "field1": {
+            "type": "string",
+            "format": "email"
+          },
+          "field2": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "field3": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10,
+            "multipleOf": 0.1
+          },
+          "field4": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "field5": {
+            "$ref": "#/components/schemas/Component2"
+          }
+        }
+      },
+      "Component2": {
+        "enum": ["option1", "option2"],
+        "type": "string",
+        "description": "Component description"
+      },
+      "Component3": {
+        "allOf": [{ "type": "string" }, { "type": "number" }]
+      },
+      "Component4": {
+        "anyOf": [{ "type": "string" }, { "type": "number" }]
+      },
+      "Component5": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["pet_type"],
+            "properties": {
+              "pet_type": { "type": "string" },
+              "hunt": { "type": "boolean" }
+            },
+            "description": "Object description"
+          },
+          {
+            "type": "object",
+            "required": ["pet_type"],
+            "properties": {
+              "pet_type": { "type": "string" },
+              "bark": { "type": "boolean" }
+            },
+            "description": "Object description"
+          }
+        ],
+        "discriminator": { "propertyName": "pet_type" }
+      }
+    }
+  }
+}

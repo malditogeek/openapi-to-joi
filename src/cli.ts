@@ -3,7 +3,7 @@
 import fs from "fs"
 import yargs from "yargs"
 import { hideBin } from "yargs/helpers"
-import openapiSchemaToCode from "./openapi-schema-to-code"
+import { openapiSchemaToCode } from "./openapi-schema-to-code"
 
 const argv = yargs(hideBin(process.argv))
   .usage("Usage: $0 <path> [options]")
@@ -22,15 +22,29 @@ const argv = yargs(hideBin(process.argv))
   .option("prettier-config", {
     describe: "The path to your custom Prettier configuration",
     type: "string",
-  }).argv as unknown as { _: string[]; output: string; prettierConfig?: string }
+  })
+
+  .option("skip-descriptions", {
+    type: "boolean",
+    description: "Descriptions are not included into Joi schema export",
+  }).argv as unknown as {
+  _: string[]
+  output: string
+  prettierConfigPath?: string
+  skipDescriptions?: boolean
+}
 
 const run = async () => {
   const schemaPath = argv._[0]
-  const { output, prettierConfig } = argv
+  const { output, prettierConfigPath, skipDescriptions } = argv
 
   // TODO: Allow glob source, resolve to paths, and require output to be directory, with one output file per input file.
 
-  const generatedCode = await openapiSchemaToCode(schemaPath, prettierConfig)
+  const generatedCode = await openapiSchemaToCode({
+    schemaPath,
+    prettierConfigPath,
+    skipDescriptions,
+  })
   await fs.promises.writeFile(output, generatedCode, "utf-8")
   console.log(`File created: ${output}`)
 }

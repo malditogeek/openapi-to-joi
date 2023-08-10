@@ -1,10 +1,17 @@
 {
-  "name": "@marcduez/openapi-to-joi",
-  "version": "1.2.0",
-  "main": "cli.js",
-  "types": "cli.d.ts",
-  "repository": "git@github.com:marcduez/openapi-to-joi.git",
-  "author": "Marc Duez <marcduez@gmail.com>",
+  "name": "@savotije/openapi-to-joi",
+  "version": "2.1.0",
+  "main": "./dist/cli.js",
+  "typings": "./dist/cli.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/savotije/openapi-to-joi.git"
+  },
+  "author": "Savotije Petrovic <savotije@gmail.com>",
+  "contributors": [
+    "Marc Duez <marcduez@gmail.com>",
+    "Mauro Pompilio <hackers.are.rockstars@gmail.com>"
+  ],
   "license": "MIT",
   "keywords": [
     "convert",
@@ -46,6 +53,11 @@
     "test": "jest"
   },
   "bin": {
-    "openapi-to-joi": "cli.js"
-  }
+    "openapi-to-joi": "./dist/cli.js"
+  },
+  "description": "Generates Joi schemas from an OpenAPI v3 documents.",
+  "bugs": {
+    "url": "https://github.com/savotije/openapi-to-joi/issues"
+  },
+  "homepage": "https://github.com/savotije/openapi-to-joi#readme"
 }

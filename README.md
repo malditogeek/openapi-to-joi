@@ -1,13 +1,15 @@
 # openapi-to-joi
 
-<span class="badge-npmversion"><a href="https://npmjs.org/package/@marcduez/openapi-to-joi" title="View this project on NPM"><img src="https://img.shields.io/npm/v/@marcduez/openapi-to-joi.svg" alt="NPM version" /></a></span>
+Generates Joi schemas from an OpenAPI v3 documents.
+
+<span class="badge-npmversion"><a href="https://npmjs.org/package/@savotije/openapi-to-joi" title="View this project on NPM"><img src="https://img.shields.io/npm/v/@savotije/openapi-to-joi.svg" alt="NPM version" /></a></span>
 
 ## Installation
 
 ```sh
-$ npm install @marcduez/openapi-to-joi
+$ npm install @savotije/openapi-to-joi
 
-$ yarn add @marcduez/openapi-to-joi
+$ yarn add @savotije/openapi-to-joi
 ```
 
 ## General Usage
@@ -75,7 +77,7 @@ For example, starting with this document:
 And running this command:
 
 ```sh
-$ openapi-to-joi openapi.json --output generated.ts
+$ openapi-to-joi openapi.json --output generated.ts --skip-descriptions
 ```
 
 Produces this `generated.ts`:

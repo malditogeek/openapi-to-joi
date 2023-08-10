@@ -3,13 +3,15 @@ import enjoi from "enjoi"
 import Joi from "joi"
 import { OpenAPIV3 } from "openapi-types"
 import prettier from "prettier"
-import { stringify } from "querystring"
+import { joiSchemaToCode } from "./joi-schema-to-code"
 
-import joiSchemaToCode from "./joi-schema-to-code"
+interface GeneratorConfig {
+  schemaPath: string
+  prettierConfigPath?: string
+  skipDescriptions?: boolean
+}
 
 const TEMPLATE = `
-/* eslint-disable */
-/* prettier-ignore */
 import Joi from "joi"
 
 export const schemas = {
@@ -23,7 +25,10 @@ export const schemas = {
 
 const httpMethods = Object.values(OpenAPIV3.HttpMethods) as string[]
 
-const getOperationSchemas = (document: OpenAPIV3.Document) => {
+const getOperationSchemas = (
+  document: OpenAPIV3.Document,
+  skipDescriptions?: boolean
+) => {
   const allOperations = (
     Object.values(document.paths) as Record<string, OpenAPIV3.OperationObject>[]
   )
@@ -52,11 +57,9 @@ const getOperationSchemas = (document: OpenAPIV3.Document) => {
         const joiSchema = enjoi.schema(
           parameter.schema! as OpenAPIV3.SchemaObject
         )
+        const presence = parameter.required === true ? "required" : "optional"
+        const code = joiSchemaToCode(joiSchema, { presence, skipDescriptions })
         const parameterKey = JSON.stringify(parameter.name)
-        const code = joiSchemaToCode(
-          joiSchema,
-          parameter.required === true ? "required" : "optional"
-        )
         return `${parameterKey}: ${code}`
       }
 
@@ -81,7 +84,10 @@ const getOperationSchemas = (document: OpenAPIV3.Document) => {
     .join(",")
 }
 
-const getComponentSchemas = (document: OpenAPIV3.Document) =>
+const getComponentSchemas = (
+  document: OpenAPIV3.Document,
+  skipDescriptions?: boolean
+) =>
   Object.entries(document.components?.schemas ?? {})
     .map(([name, schema]) => {
       const joiSchema = enjoi.schema(schema as OpenAPIV3.SchemaObject, {
@@ -101,22 +107,27 @@ const getComponentSchemas = (document: OpenAPIV3.Document) =>
           return joiDescription
         },
       })
-      return `${JSON.stringify(name)}: ${joiSchemaToCode(joiSchema)}`
+      return `${JSON.stringify(name)}: ${joiSchemaToCode(joiSchema, {
+        skipDescriptions,
+      })}`
     })
     .join(",")
 
-export default async (schemaPath: string, prettierConfigPath?: string) => {
-  const document = (await SwaggerParser.validate(schemaPath, {
+export const openapiSchemaToCode = async (config: GeneratorConfig) => {
+  const document = (await SwaggerParser.validate(config.schemaPath, {
     validate: { schema: false },
   })) as OpenAPIV3.Document
 
   const mergedTemplate = TEMPLATE.replace(
     "{OPERATION_SCHEMAS}",
-    getOperationSchemas(document)
-  ).replace("{COMPONENT_SCHEMAS}", getComponentSchemas(document))
+    getOperationSchemas(document, config.skipDescriptions)
+  ).replace(
+    "{COMPONENT_SCHEMAS}",
+    getComponentSchemas(document, config.skipDescriptions)
+  )
 
-  const prettierOptions = (prettierConfigPath
-    ? await prettier.resolveConfig(prettierConfigPath)
+  const prettierOptions = (config.prettierConfigPath
+    ? await prettier.resolveConfig(config.prettierConfigPath)
     : null) ?? { parser: "typescript" }
 
   return prettier.format(mergedTemplate, prettierOptions)
